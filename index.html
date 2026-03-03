@@ -87,7 +87,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .annotation-stitle { font-size:12px; font-weight:700; color:var(--g500); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
 .annotation-text { font-size:14px; color:var(--g700); line-height:1.7; }
 
-/* === RUBRIC SECTION === */
+/* === VERIFIER SECTION === */
 .rsection { border:1px solid var(--g200); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; }
 .rsection-header { display:flex; align-items:center; gap:12px; padding:14px 20px; background:var(--g50); border-bottom:1px solid var(--g200); cursor:pointer; }
 .rsection-header h3 { font-size:14px; font-weight:600; flex:1; }
@@ -158,7 +158,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .chat-meta { font-size:10px; color:var(--g400); margin-top:2px; }
 .stars { color:var(--orange); }
 
-/* === RUBRIC DESIGN === */
+/* === VERIFIER DESIGN === */
 .cat-table { border-collapse:collapse; width:100%; font-size:13px; }
 .cat-table th { background:var(--g100); padding:8px 12px; text-align:left; border:1px solid var(--g200); font-weight:600; }
 .cat-table td { padding:8px 12px; border:1px solid var(--g200); }
@@ -173,7 +173,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .quirk-card { border:1px solid var(--g200); border-radius:var(--radius); padding:12px 16px; margin-bottom:8px; }
 .quirk-tool { font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; }
 .quirk-desc { font-size:13px; color:var(--g700); margin-top:4px; line-height:1.5; }
-.quirk-rubric { font-size:11px; color:var(--g400); margin-top:4px; }
+.quirk-verifier { font-size:11px; color:var(--g400); margin-top:4px; }
 
 /* === TOOLTIP === */
 .info-icon { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:var(--g200); color:var(--g500); cursor:help; flex-shrink:0; position:relative; font-style:italic; font-size:11px; font-weight:600; font-family:Georgia,serif; }
@@ -237,7 +237,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
   <!-- STEP 2: Choose a task -->
   <div class="sidebar-section-row">
-    <span class="sidebar-section-label">2. Task</span>
+    <span class="sidebar-section-label">2. Task &amp; Rollouts</span>
     <i class="info-icon" data-tip="Each task is a realistic request the persona might ask their AI assistant. Tasks span different domains (Health, Exploration, etc.) and require actual tool use.">i</i>
   </div>
   <div class="task-list" id="task-list"></div>
@@ -254,9 +254,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
       <span class="sidebar-item-text">Environment<span class="sidebar-item-desc">Persona's app data &amp; context</span></span>
     </button>
-    <button class="sidebar-item" data-view="rubric-design" onclick="switchView(this,'rubric-design')">
+    <button class="sidebar-item" data-view="verifier-design" onclick="switchView(this,'verifier-design')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      <span class="sidebar-item-text">Rubric Design<span class="sidebar-item-desc">Scoring categories &amp; point breakdown</span></span>
+      <span class="sidebar-item-text">Verifier Design<span class="sidebar-item-desc">Scoring categories &amp; point breakdown</span></span>
     </button>
   </nav>
   <div style="margin-top:auto;padding:12px 16px;font-size:11px;color:var(--g400);border-top:1px solid var(--g200);text-align:center">&copy; CollinearAI 2026</div>
@@ -275,8 +275,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <div class="env-tabs-bar" id="env-tabs-bar"></div>
     <div class="env-content" id="env-content"></div>
   </div>
-  <div class="panel" id="panel-rubric-design">
-    <div class="main-content" id="rubric-design-content" style="overflow-y:auto;padding:24px;flex:1"></div>
+  <div class="panel" id="panel-verifier-design">
+    <div class="main-content" id="verifier-design-content" style="overflow-y:auto;padding:24px;flex:1"></div>
   </div>
 </div>
 
@@ -393,7 +393,7 @@ function switchModel(key){
 function rerender(){
   if(currentView==='rollouts')renderRollouts();
   else if(currentView==='environment')renderEnvironment();
-  else if(currentView==='rubric-design')renderRubricDesign();
+  else if(currentView==='verifier-design')renderVerifierDesign();
 }
 
 function renderTaskList(){
@@ -438,7 +438,6 @@ function renderRollouts(){
     <div class="metric-box"><div class="metric-label">Tool Calls</div><div class="metric-val">${tc}</div></div>
     <div class="metric-box"><div class="metric-label">Tokens</div><div class="metric-val">${tokens?Math.round(tokens/1000)+'K':'N/A'}</div></div>
     <div class="metric-box"><div class="metric-label">Difficulty</div><div class="metric-val">${task.difficulty_estimate}/5</div></div>
-    <div class="metric-box"><div class="metric-label">Action Tier</div><div class="metric-val">T${task.action_tier}</div></div>
   </div>`;
 
   // TASK CARD
@@ -461,18 +460,21 @@ function renderRollouts(){
   // ANNOTATION (DID WELL / DID POORLY)
   h+=renderAnnotation(task,md);
 
-  // RUBRIC SCORES
-  h+=renderRubricScores(task,md);
+  // PROGRAMMATIC VERIFIERS
+  h+=renderProgrammaticVerifiers(task,md);
+
+  // VERIFIER SCORES (LLM-judged)
+  h+=renderVerifierScores(task,md);
 
   // QUIRKS
   if(task.quirks&&task.quirks.length){
-    h+=`<div class="rsection"><div class="rsection-header" onclick="toggle('quirks')"><h3>QUIRKS</h3><span class="badge badge-purple badge-lg">${task.quirks.length} quirks</span><span class="chevron-toggle" id="quirks-ch">&#9660;</span></div><div class="collapsible" id="quirks" style="max-height:0">`;
+    h+=`<div class="rsection"><div class="rsection-header" onclick="toggle('quirks')"><h3>QUIRKS</h3><i class="info-icon" data-tip="Subtle edge cases in the task data that test whether the agent noticed nuanced details, e.g. a shift in spending patterns or a hidden conflict.">i</i><span class="badge badge-purple badge-lg">${task.quirks.length} quirks</span><span class="chevron-toggle" id="quirks-ch">&#9660;</span></div><div class="collapsible" id="quirks" style="max-height:0">`;
     task.quirks.forEach((q,i)=>{
       const linked=q.linked_rubric_ids||[];
       const caught=linked.length>0?checkQuirkCaught(md,linked,graders):'unknown';
       const icon=caught==='yes'?'&#10003;':caught==='no'?'&#10007;':'?';
       const iconCls=caught==='yes'?'color:var(--green)':caught==='no'?'color:var(--red)':'color:var(--g400)';
-      h+=`<div class="quirk-card"><div style="display:flex;justify-content:space-between"><div class="quirk-tool">${esc(q.source_tool)}</div><span style="font-weight:700;${iconCls}">${icon} ${caught==='yes'?'Caught':caught==='no'?'Missed':'Unknown'}</span></div><div class="quirk-desc">${esc(q.description)}</div><div class="quirk-rubric">Linked rubric: ${linked.map(r=>`<code>${esc(r)}</code>`).join(', ')}</div></div>`;
+      h+=`<div class="quirk-card"><div style="display:flex;justify-content:space-between"><div class="quirk-tool">${esc(q.source_tool)}</div><span style="font-weight:700;${iconCls}">${icon} ${caught==='yes'?'Caught':caught==='no'?'Missed':'Unknown'}</span></div><div class="quirk-desc">${esc(q.description)}</div><div class="quirk-verifier">Linked verifier: ${linked.map(r=>`<code>${esc(r)}</code>`).join(', ')}</div></div>`;
     });
     h+='</div></div>';
   }
@@ -521,7 +523,7 @@ function renderAnnotation(task,md){
     }
   }
 
-  let h=`<div class="annotation-box"><div class="annotation-header" onclick="toggle('annot')"><h3>ANNOTATION</h3><span class="badge badge-lg badge-info">${didWell.length} well / ${didPoorly.length} poor</span><span class="chevron-toggle" id="annot-ch">&#9660;</span></div><div class="collapsible" id="annot" style="max-height:0"><div class="annotation-body">`;
+  let h=`<div class="annotation-box"><div class="annotation-header" onclick="toggle('annot')"><h3>ANNOTATION</h3><i class="info-icon" data-tip="Summary of what the agent did well and poorly, derived from majority vote across LLM judge models.">i</i><span class="badge badge-lg badge-info">${didWell.length} well / ${didPoorly.length} poor</span><span class="chevron-toggle" id="annot-ch">&#9660;</span></div><div class="collapsible" id="annot" style="max-height:0"><div class="annotation-body">`;
 
   if(didWell.length){
     h+=`<div class="annotation-section"><div class="annotation-stitle"><span style="color:var(--green)">&#10003;</span> DID WELL</div>`;
@@ -543,7 +545,281 @@ function renderAnnotation(task,md){
   return h;
 }
 
-function renderRubricScores(task,md){
+// Tool category → tool name prefix mapping (shared)
+const TOOL_PATTERNS={
+  'outlook':['outlook'],'google_calendar':['google_calendar'],'opentable':['opentable'],
+  'whatsapp':['whatsapp'],'weather':['weather'],'file_explorer':['file_explorer','filesystem'],
+  'terminal':['terminal','bash'],'nano_banana_pro':['nano_banana','image_gen'],
+  'banking':['banking'],'github':['github'],'google_maps':['google_maps'],
+  'health_tracker':['health_tracker'],'instacart':['instacart'],'rideshare':['rideshare'],
+  'slack':['slack'],'spotify':['spotify'],'todoist':['todoist'],'instagram':['instagram'],
+};
+// Sub-requirement → tool category keyword mapping (shared)
+const SR_TOOL_KEYWORDS={
+  'banking':['banking','transaction','bank','balance','venmo','charge','spending','cost','payment'],
+  'instacart':['instacart','order','grocer','delivery','shopping'],
+  'health_tracker':['health','workout','sleep','steps','heart rate','calorie','activity','daily summar','fitness','training'],
+  'todoist':['todoist','task','project','to-do','todo','checklist'],
+  'github':['github','commit','pull request','pr','repo','issue','code'],
+  'slack':['slack','message','channel','workspace'],
+  'instagram':['instagram','post','engagement','follower','likes'],
+  'rideshare':['rideshare','ride','uber','lyft','trip','fare','surge'],
+  'google_maps':['google maps','maps','direction','places','saved place','korean bbq','koreatown','navigate'],
+  'spotify':['spotify','playlist','music','track','song'],
+  'google_calendar':['calendar','event','schedule','conflict','weekend'],
+  'outlook':['outlook','email','inbox'],
+  'whatsapp':['whatsapp','chat'],
+  'terminal':['terminal','execute','script','code','compute'],
+};
+
+// Programmatic verifier category metadata (shared for design page)
+const PROG_V_CATS=[
+  {key:'coverage',name:'Tool Coverage',color:'var(--blue)',
+    desc:'Checks whether the agent called each required tool category and which specific methods were used. Also flags extra tools used beyond what the task requires.'},
+  {key:'subreq',name:'Sub-Requirement Trace',color:'var(--purple)',
+    desc:'Maps each sub-requirement to expected tool categories via keyword matching and checks if those tools were actually called. For synthesis requirements, checks output length. For calculations, checks for numeric values.'},
+  {key:'output',name:'Output Validation',color:'var(--green)',
+    desc:'Validates the final output: present, substantive length (scaled to task complexity), contains expected numeric data, references all required data sources, and is not excessively long (data dumping).'},
+  {key:'efficiency',name:'Execution Efficiency',color:'var(--orange)',
+    desc:'Checks for duplicate identical tool calls, step count within expected bounds, tool-call-to-requirement ratio, and no single tool called excessively.'},
+  {key:'errors',name:'Error & Robustness',color:'var(--red)',
+    desc:'Detects tool errors, retry loops on failing tools, whether execution completed, and whether all tools returned non-empty data.'},
+];
+
+function computeProgrammaticVerifiers(task,md){
+  const steps=md.trajectory.steps;
+  const toolCalls=steps.filter(s=>s.type==='tool_call');
+  const toolNames=toolCalls.map(tc=>(tc.toolName||'').toLowerCase());
+  const uniqueToolMethods=[...new Set(toolNames)];
+  const output=md.trajectory.output||'';
+  const outputLower=output.toLowerCase();
+
+  function toolCatMatch(cat){return TOOL_PATTERNS[cat]||[cat.replace(/\s+/g,'_')];}
+  function callsForCat(cat){const pats=toolCatMatch(cat);return toolCalls.filter(tc=>pats.some(p=>(tc.toolName||'').toLowerCase().includes(p)));}
+  function srMatchesCat(srLower,cat){return(SR_TOOL_KEYWORDS[cat]||[]).some(kw=>srLower.includes(kw));}
+
+  const categories=[];
+
+  // ═══════════════════════════════════════════
+  // CATEGORY 1: TOOL COVERAGE
+  // ═══════════════════════════════════════════
+  const coverageChecks=[];
+  for(const cat of(task.tool_categories||[])){
+    const calls=callsForCat(cat);
+    const methods=[...new Set(calls.map(tc=>(tc.toolName||'').split('__').pop()))];
+    coverageChecks.push({
+      name:cat.replace(/_/g,' '),
+      pass:calls.length>0,
+      detail:calls.length?calls.length+' call(s): '+methods.join(', '):'Not called in trajectory',
+    });
+  }
+  // Extra tools used (outside required categories)
+  const reqPrefixes=(task.tool_categories||[]).flatMap(c=>toolCatMatch(c));
+  const extraTools=uniqueToolMethods.filter(tn=>!reqPrefixes.some(p=>tn.includes(p)));
+  if(extraTools.length){
+    coverageChecks.push({
+      name:'Extra tools used',
+      pass:true,// neutral, informational
+      detail:extraTools.length+' non-required tool(s): '+extraTools.map(t=>t.split('__').pop()).join(', '),
+      info:true,
+    });
+  }
+  categories.push({name:'Tool Coverage',color:'var(--blue)',checks:coverageChecks});
+
+  // ═══════════════════════════════════════════
+  // CATEGORY 2: SUB-REQUIREMENT TRACE
+  // ═══════════════════════════════════════════
+  const srChecks=[];
+  for(const sr of(task.sub_requirements||[])){
+    const srLower=sr.toLowerCase();
+    const isSynthesis=srLower.includes('synthesize')||srLower.includes('summary')||srLower.includes('compile')||srLower.includes('provide')||srLower.includes('prioritize');
+
+    if(isSynthesis){
+      // Synthesis steps → check output quality
+      const pass=output.length>200;
+      srChecks.push({
+        name:sr.length>75?sr.substring(0,72)+'...':sr,
+        pass:pass,
+        detail:pass?'Final output is '+output.length+' chars (synthesis present)':'Output too short ('+output.length+' chars) for synthesis requirement',
+      });
+      continue;
+    }
+
+    // Find which tool categories this sub-req references
+    const matchedCats=(task.tool_categories||[]).filter(cat=>srMatchesCat(srLower,cat));
+
+    if(matchedCats.length===0){
+      // Check for calculation/output keywords
+      const isCalc=srLower.includes('calculate')||srLower.includes('total')||srLower.includes('tally')||srLower.includes('compare');
+      if(isCalc){
+        const hasDollar=/\$[\d,.]+/.test(output)||/\d+\.\d{2}/.test(output);
+        srChecks.push({name:sr.length>75?sr.substring(0,72)+'...':sr,pass:hasDollar,
+          detail:hasDollar?'Output contains numeric/dollar values':'No dollar amounts or numeric data found in output'});
+      }else{
+        srChecks.push({name:sr.length>75?sr.substring(0,72)+'...':sr,pass:true,detail:'No tool mapping (manual check needed)',info:true});
+      }
+      continue;
+    }
+
+    // Check if matched tool categories were called
+    let allCalled=true,details=[];
+    for(const cat of matchedCats){
+      const calls=callsForCat(cat);
+      if(calls.length>0){
+        details.push(cat.replace(/_/g,' ')+': '+calls.length+' call(s)');
+      }else{
+        allCalled=false;
+        details.push(cat.replace(/_/g,' ')+': NOT called');
+      }
+    }
+
+    // Also check if output mentions relevant keywords from sub-requirement
+    const keyTerms=sr.match(/\b[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*/g)||[];// extract proper nouns
+    const dollarMatch=sr.match(/\$[\d,.]+/g)||[];
+    let outputEvidence=[];
+    for(const kt of keyTerms){
+      if(kt.length>3&&outputLower.includes(kt.toLowerCase()))outputEvidence.push(kt);
+    }
+    for(const dm of dollarMatch){
+      if(output.includes(dm))outputEvidence.push(dm);
+    }
+
+    const detailStr=details.join('; ')+(outputEvidence.length?' | output mentions: '+outputEvidence.join(', '):'');
+    srChecks.push({name:sr.length>75?sr.substring(0,72)+'...':sr,pass:allCalled,detail:detailStr});
+  }
+  categories.push({name:'Sub-Requirement Trace',color:'var(--purple)',checks:srChecks});
+
+  // ═══════════════════════════════════════════
+  // CATEGORY 3: OUTPUT VALIDATION
+  // ═══════════════════════════════════════════
+  const outChecks=[];
+
+  // 3a: Final output present
+  outChecks.push({name:'Final output present',pass:output.trim().length>0,
+    detail:output.length?output.length+' characters':'No final output produced'});
+
+  // 3b: Output substantive (>200 chars for multi-tool tasks)
+  const minLen=(task.tool_categories||[]).length>=3?200:100;
+  outChecks.push({name:'Output is substantive',pass:output.length>=minLen,
+    detail:output.length>=minLen?output.length+' chars (above '+minLen+' threshold)':output.length+' chars (below '+minLen+' min for '+((task.tool_categories||[]).length)+'-tool task)'});
+
+  // 3c: Contains numeric data (if task involves financial/health)
+  const needsNumbers=(task.tool_categories||[]).some(c=>['banking','health_tracker','instacart','rideshare'].includes(c));
+  if(needsNumbers){
+    const dollarAmounts=(output.match(/\$[\d,]+\.?\d*/g)||[]);
+    const numbers=(output.match(/\b\d{2,}\b/g)||[]).length;
+    const pass=dollarAmounts.length>0||numbers>3;
+    outChecks.push({name:'Contains numeric data',pass:pass,
+      detail:pass?(dollarAmounts.length+' dollar amount(s), '+numbers+' numeric values'):'Expected dollar amounts or numeric data for financial/health task'});
+  }
+
+  // 3d: References required tool domains in output
+  const mentionedDomains=(task.tool_categories||[]).filter(cat=>{
+    const keywords=SR_TOOL_KEYWORDS[cat]||[];
+    return keywords.some(kw=>outputLower.includes(kw))||outputLower.includes(cat.replace(/_/g,' '));
+  });
+  const allDomains=(task.tool_categories||[]).length;
+  outChecks.push({name:'References all data sources',pass:mentionedDomains.length>=allDomains*0.5,
+    detail:mentionedDomains.length+'/'+allDomains+' tool domains referenced in output'+(mentionedDomains.length<allDomains?' (missing: '+((task.tool_categories||[]).filter(c=>!mentionedDomains.includes(c)).map(c=>c.replace(/_/g,' ')).join(', '))+')':'')});
+
+  // 3e: Not excessively long (data dumping)
+  const tooLong=output.length>8000;
+  outChecks.push({name:'No data dumping',pass:!tooLong,
+    detail:tooLong?output.length+' chars - may be dumping raw tool output':'Output length reasonable ('+output.length+' chars)'});
+
+  categories.push({name:'Output Validation',color:'var(--green)',checks:outChecks});
+
+  // ═══════════════════════════════════════════
+  // CATEGORY 4: EXECUTION EFFICIENCY
+  // ═══════════════════════════════════════════
+  const effChecks=[];
+
+  // 4a: No duplicate identical calls (same tool + same input)
+  const callSigs=toolCalls.map(tc=>tc.toolName+'|'+(tc.input||''));
+  const dupes=callSigs.filter((s,i)=>callSigs.indexOf(s)!==i);
+  const uniqueDupes=[...new Set(dupes)];
+  effChecks.push({name:'No duplicate calls',pass:uniqueDupes.length===0,
+    detail:uniqueDupes.length===0?'All '+toolCalls.length+' calls are unique':uniqueDupes.length+' duplicated call(s): '+uniqueDupes.map(s=>s.split('|')[0].split('__').pop()).join(', ')});
+
+  // 4b: Reasonable step count relative to task complexity
+  const expectedRange=[(task.sub_requirements||[]).length*2,(task.sub_requirements||[]).length*12];
+  const totalSteps=md.trajectory.total_steps;
+  const stepsOk=totalSteps<=expectedRange[1];
+  effChecks.push({name:'Step count within bounds',pass:stepsOk,
+    detail:totalSteps+' steps (expected '+expectedRange[0]+'-'+expectedRange[1]+' for '+(task.sub_requirements||[]).length+' sub-requirements)'});
+
+  // 4c: Tool call to sub-requirement ratio
+  const ratio=toolCalls.length/Math.max(1,(task.sub_requirements||[]).length);
+  const ratioOk=ratio<=10;
+  effChecks.push({name:'Efficient tool usage',pass:ratioOk,
+    detail:toolCalls.length+' calls / '+(task.sub_requirements||[]).length+' sub-reqs = '+ratio.toFixed(1)+' calls/req'+(ratioOk?'':' (excessive)')});
+
+  // 4d: No tool called excessively (>8 times)
+  const toolFreq={};toolNames.forEach(tn=>{toolFreq[tn]=(toolFreq[tn]||0)+1;});
+  const excessive=Object.entries(toolFreq).filter(([,c])=>c>8);
+  effChecks.push({name:'No excessive single-tool calls',pass:excessive.length===0,
+    detail:excessive.length===0?'Max calls to any tool: '+Math.max(...Object.values(toolFreq)):excessive.map(([t,c])=>t.split('__').pop()+': '+c+'x').join(', ')});
+
+  categories.push({name:'Execution Efficiency',color:'var(--orange)',checks:effChecks});
+
+  // ═══════════════════════════════════════════
+  // CATEGORY 5: ERROR & ROBUSTNESS
+  // ═══════════════════════════════════════════
+  const errChecks=[];
+
+  // 5a: Tool errors in outputs
+  const errorCalls=toolCalls.filter(tc=>{const o=(tc.output||'').toLowerCase();return o.includes('"error"')||o.includes('exception')||o.includes('traceback');});
+  errChecks.push({name:'No tool errors',pass:errorCalls.length===0,
+    detail:errorCalls.length===0?'All '+toolCalls.length+' tool calls succeeded':errorCalls.length+' error(s): '+errorCalls.map(tc=>tc.toolName.split('__').pop()).join(', ')});
+
+  // 5b: No repeated failed calls (same tool erroring multiple times)
+  const failedTools=errorCalls.map(tc=>tc.toolName);
+  const failFreq={};failedTools.forEach(t=>{failFreq[t]=(failFreq[t]||0)+1;});
+  const repeatedFails=Object.entries(failFreq).filter(([,c])=>c>1);
+  errChecks.push({name:'No retry loops on errors',pass:repeatedFails.length===0,
+    detail:repeatedFails.length===0?'No repeated failures detected':repeatedFails.map(([t,c])=>t.split('__').pop()+' failed '+c+'x').join(', ')});
+
+  // 5c: Agent completed (didn't hit max tokens)
+  const lastStep=steps[steps.length-1];
+  const completed=output.trim().length>0;
+  errChecks.push({name:'Execution completed',pass:completed,
+    detail:completed?'Agent produced final output':'Agent may have been truncated or stopped early'});
+
+  // 5d: No empty tool outputs (tool returned nothing)
+  const emptyCalls=toolCalls.filter(tc=>!tc.output||tc.output.trim().length<3);
+  errChecks.push({name:'All tools returned data',pass:emptyCalls.length===0,
+    detail:emptyCalls.length===0?'All tools returned non-empty responses':emptyCalls.length+' tool(s) returned empty: '+emptyCalls.map(tc=>tc.toolName.split('__').pop()).join(', ')});
+
+  categories.push({name:'Error & Robustness',color:'var(--red)',checks:errChecks});
+
+  return categories;
+}
+
+function renderProgrammaticVerifiers(task,md){
+  const categories=computeProgrammaticVerifiers(task,md);
+  const allChecks=categories.flatMap(c=>c.checks);
+  const totalPass=allChecks.filter(c=>c.pass).length;
+  const totalChecks=allChecks.length;
+
+  let h=`<div class="rsection"><div class="rsection-header" onclick="toggle('prog-v')"><h3>PROGRAMMATIC VERIFIERS</h3><i class="info-icon" data-tip="Deterministic checks auto-computed from the agent's execution trace. No LLM judgment, purely based on which tools were called, output content, and execution patterns.">i</i><span class="badge badge-lg ${totalPass>=totalChecks*0.8?'badge-pass':totalPass>=totalChecks*0.5?'badge-warn':'badge-fail'}">${totalPass}/${totalChecks}</span><span class="chevron-toggle" id="prog-v-ch">&#9660;</span></div><div class="collapsible" id="prog-v" style="max-height:0">`;
+
+  categories.forEach(cat=>{
+    const catPass=cat.checks.filter(c=>c.pass).length;
+    h+=`<div style="padding:10px 20px 4px;font-size:12px;font-weight:700;color:${cat.color};text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--g200);display:flex;align-items:center;gap:8px">${esc(cat.name)}<span style="font-weight:400;font-size:11px;color:var(--g400)">${catPass}/${cat.checks.length}</span></div>`;
+
+    cat.checks.forEach(c=>{
+      const icon=c.info?'&#8505;':c.pass?'&#10003;':'&#10007;';
+      const cls=c.info?'':c.pass?'p':'f';
+      const ciBg=c.info?'background:var(--blue-bg);color:var(--blue)':'';
+      h+=`<div class="rrow"><div class="ci ${cls}" ${ciBg?'style="'+ciBg+'"':''}>${icon}</div><div class="ct" style="min-width:0"><div style="font-size:13px;color:var(--g700)">${esc(c.name)}</div><div style="font-size:11px;color:var(--g500);margin-top:2px;line-height:1.4">${esc(c.detail)}</div></div></div>`;
+    });
+  });
+
+  h+='</div></div>';
+  return h;
+}
+
+function renderVerifierScores(task,md){
   const graders=getGraders();
   const cats=DATA.rubric_categories;
 
@@ -565,11 +841,11 @@ function renderRubricScores(task,md){
     }
   }
 
-  let h=`<div class="rsection"><div class="rsection-header" onclick="toggle('rubric')"><h3>RUBRIC SCORES</h3><span class="badge badge-lg ${totalPassed>totalFailed?'badge-pass':'badge-fail'}">${totalPassed}/${totalPassed+totalFailed}</span><span class="chevron-toggle" id="rubric-ch">&#9660;</span></div><div class="collapsible" id="rubric" style="max-height:0">`;
+  let h=`<div class="rsection"><div class="rsection-header" onclick="toggle('vscores')"><h3>LLM VERIFIER SCORES</h3><i class="info-icon" data-tip="Each verifier item scored by 3 LLM judge models. Colored dots show per-judge agreement. Click 'Show evidence' for the grader's reasoning.">i</i><span class="badge badge-lg ${totalPassed>totalFailed?'badge-pass':'badge-fail'}">${totalPassed}/${totalPassed+totalFailed}</span><span class="chevron-toggle" id="vscores-ch">&#9660;</span></div><div class="collapsible" id="vscores" style="max-height:0">`;
 
   for(const [catKey,items] of Object.entries(groups)){
     const catInfo=cats[catKey]||{abbrev:catKey,name:catKey,color:'var(--g500)'};
-    h+=`<div style="padding:10px 20px 4px;font-size:12px;font-weight:700;color:${catInfo.color};text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--g200)">${esc(catInfo.abbrev)} &mdash; ${esc(catInfo.name)}</div>`;
+    h+=`<div style="padding:10px 20px 4px;font-size:12px;font-weight:700;color:${catInfo.color};text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--g200)">${esc(catInfo.abbrev)} &middot; ${esc(catInfo.name)}</div>`;
 
     for(const r of items){
       // Get grades across all graders
@@ -608,7 +884,7 @@ function renderTrajectory(md){
   const toolSteps=steps.filter(s=>s.type==='tool_call');
   if(!toolSteps.length&&!md.trajectory.output)return'';
 
-  let h=`<div class="rsection"><div class="rsection-header" onclick="toggle('traj')"><h3>TRAJECTORY</h3><span class="badge badge-warn badge-lg">${toolSteps.length} tool calls</span><span class="chevron-toggle" id="traj-ch">&#9660;</span></div><div class="collapsible" id="traj" style="max-height:0">`;
+  let h=`<div class="rsection"><div class="rsection-header" onclick="toggle('traj')"><h3>AGENT TRACE</h3><i class="info-icon" data-tip="Step-by-step log of the agent's actions: what tools it called, what data it received, and its reasoning between steps. This is the raw execution record.">i</i><span class="badge badge-warn badge-lg">${toolSteps.length} tool calls</span><span class="chevron-toggle" id="traj-ch">&#9660;</span></div><div class="collapsible" id="traj" style="max-height:0">`;
 
   steps.forEach((step,idx)=>{
     if(step.type==='reasoning'&&step.text){
@@ -679,7 +955,7 @@ function renderEnvContent(){
 // === SEED DATA RENDERERS ===
 function renderBanking(d){
   let h=`<div class="card"><div class="card-title"><div class="dot" style="background:var(--green)"></div>ACCOUNT</div>
-    <div style="font-size:14px"><strong>${esc(d.account_holder)}</strong> &mdash; ${esc(d.institution)} (${esc(d.account_type)})</div>
+    <div style="font-size:14px"><strong>${esc(d.account_holder)}</strong> &middot; ${esc(d.institution)} (${esc(d.account_type)})</div>
     <div style="font-size:13px;color:var(--g500)">Opening balance: $${(d.opening_balance||0).toLocaleString()}</div></div>`;
   // Transactions table
   const txns=d.transactions||[];
@@ -746,7 +1022,7 @@ function renderInstacart(d){
   let h=`<h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Orders (${orders.length})</h2>`;
   orders.forEach(o=>{
     const items=(o.items||[]).map(i=>typeof i==='string'?i:(i.name||i.item||JSON.stringify(i))).join(', ');
-    h+=`<div class="seed-card"><div class="seed-card-header">${esc(o.store||o.retailer||'Order')} &mdash; $${(o.total||o.order_total||0).toFixed(2)}</div><div class="seed-card-sub">${esc(o.date||o.delivery_date||'')} ${o.delivery_note?'&bull; '+esc(o.delivery_note):''}</div><div class="seed-card-body">${esc(items.substring(0,200))}</div></div>`;
+    h+=`<div class="seed-card"><div class="seed-card-header">${esc(o.store||o.retailer||'Order')} &middot; $${(o.total||o.order_total||0).toFixed(2)}</div><div class="seed-card-sub">${esc(o.date||o.delivery_date||'')} ${o.delivery_note?'&bull; '+esc(o.delivery_note):''}</div><div class="seed-card-body">${esc(items.substring(0,200))}</div></div>`;
   });
   if(d.shopping_lists&&d.shopping_lists.length){
     h+=`<h2 style="font-size:18px;font-weight:700;margin:20px 0 16px">Shopping Lists (${d.shopping_lists.length})</h2>`;
@@ -1210,25 +1486,174 @@ function renderGenericJson(d){
   return `<div style="max-height:600px;overflow:auto"><pre style="font-family:'SF Mono',Menlo,monospace;font-size:11px;color:var(--g700);white-space:pre-wrap;word-break:break-word">${esc(JSON.stringify(d,null,2))}</pre></div>`;
 }
 
-// === RUBRIC DESIGN VIEW ===
-function renderRubricDesign(){
+// === VERIFIER DESIGN VIEW ===
+// Describe what programmatic checks a task will generate (no trajectory needed)
+function describeProgrammaticChecks(task){
+  const cats=[];
+  const toolCats=task.tool_categories||[];
+  const subReqs=task.sub_requirements||[];
+  const needsNumbers=toolCats.some(c=>['banking','health_tracker','instacart','rideshare'].includes(c));
+  const minLen=toolCats.length>=3?200:100;
+
+  // Tool Coverage
+  const cov=toolCats.map(c=>({desc:'Verify '+c.replace(/_/g,' ')+' tools are called in trajectory'}));
+  cov.push({desc:'Flag any extra tools used beyond required categories',info:true});
+  cats.push({key:'coverage',items:cov});
+
+  // Sub-Requirement Trace
+  const sr=subReqs.map(s=>({desc:s}));
+  cats.push({key:'subreq',items:sr});
+
+  // Output Validation
+  const ov=[{desc:'Final output is present and non-empty'}];
+  ov.push({desc:'Output is substantive (>'+minLen+' chars for '+toolCats.length+'-tool task)'});
+  if(needsNumbers)ov.push({desc:'Output contains numeric/dollar values (financial or health data expected)'});
+  ov.push({desc:'Output references all '+toolCats.length+' required data source domains'});
+  ov.push({desc:'Output is not excessively long (no raw data dumping)'});
+  cats.push({key:'output',items:ov});
+
+  // Execution Efficiency
+  const eff=[
+    {desc:'No duplicate identical tool calls (same tool + same input)'},
+    {desc:'Step count within expected bounds ('+subReqs.length*2+'-'+subReqs.length*12+' for '+subReqs.length+' sub-requirements)'},
+    {desc:'Efficient tool-call-to-requirement ratio (\u226410 calls per sub-requirement)'},
+    {desc:'No single tool called more than 8 times'},
+  ];
+  cats.push({key:'efficiency',items:eff});
+
+  // Error & Robustness
+  const err=[
+    {desc:'No tool errors in outputs'},
+    {desc:'No retry loops on failing tools'},
+    {desc:'Execution completed with final output'},
+    {desc:'All tools returned non-empty data'},
+  ];
+  cats.push({key:'errors',items:err});
+
+  return cats;
+}
+
+function renderVerifierDesign(){
   const cats=DATA.rubric_categories;
-  let h='<h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Rubric Category Definitions</h2>';
+  let h='';
 
-  // Category table
-  h+=`<div class="card"><table class="cat-table"><thead><tr><th>Abbrev</th><th>Category</th><th>Description</th></tr></thead><tbody>`;
+  // ═══════════════════════════════════════════
+  // OVERVIEW: Two types side by side
+  // ═══════════════════════════════════════════
+  h+=`<h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Verifier Overview</h2>`;
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">`;
+
+  // Programmatic card
+  h+=`<div class="card" style="border-top:3px solid var(--blue)"><div class="card-title"><div class="dot" style="background:var(--blue)"></div>PROGRAMMATIC VERIFIERS<span class="badge badge-info" style="margin-left:auto">Auto</span></div>
+    <p style="font-size:13px;color:var(--g600);margin-bottom:12px">Deterministic checks computed directly from trajectory data. No LLM judgment involved.</p>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
+  PROG_V_CATS.forEach(pc=>{
+    h+=`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--g150)"><span style="width:8px;height:8px;border-radius:50%;background:${pc.color};flex-shrink:0;margin-top:5px"></span><div><div style="font-size:13px;font-weight:600;color:${pc.color}">${esc(pc.name)}</div><div style="font-size:11px;color:var(--g500);line-height:1.4">${esc(pc.desc)}</div></div></div>`;
+  });
+  h+=`</div></div>`;
+
+  // LLM-judged card
+  h+=`<div class="card" style="border-top:3px solid var(--purple)"><div class="card-title"><div class="dot" style="background:var(--purple)"></div>LLM-JUDGED VERIFIERS<span class="badge badge-purple" style="margin-left:auto">${(DATA.grader_models||[]).length} Judges</span></div>
+    <p style="font-size:13px;color:var(--g600);margin-bottom:12px">Each item scored by ${(DATA.grader_models||[]).length} judge models. Majority vote determines pass/fail.</p>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
   for(const [key,cat] of Object.entries(cats)){
-    h+=`<tr><td><span class="cat-dot" style="background:${cat.color}"></span><strong style="color:${cat.color}">${esc(cat.abbrev)}</strong></td><td>${esc(cat.name)}</td><td>${esc(cat.description)}</td></tr>`;
+    h+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--g150)"><span style="width:8px;height:8px;border-radius:50%;background:${cat.color};flex-shrink:0"></span><div style="font-size:13px"><strong style="color:${cat.color}">${esc(cat.abbrev)}</strong> <span style="color:var(--g600)">${esc(cat.name)}</span></div></div>`;
   }
-  h+='</tbody></table></div>';
+  h+=`</div></div></div>`;
 
-  // Per-task rubric breakdown
-  h+='<h2 style="font-size:20px;font-weight:700;margin:32px 0 20px">Per-Task Rubric Breakdown</h2>';
-  for(const persona of Object.keys(DATA.personas)){
-    const p=DATA.personas[persona];
-    h+=`<h3 style="font-size:16px;font-weight:600;margin:24px 0 12px">${esc(p.name)}</h3>`;
-    p.tasks.forEach(task=>{
-      // Point allocation by category
+  // ═══════════════════════════════════════════
+  // PER-TASK VERIFIER BREAKDOWN
+  // ═══════════════════════════════════════════
+  // ═══════════════════════════════════════════
+  // CROSS-TASK SUMMARY
+  // ═══════════════════════════════════════════
+  h+=`<h2 style="font-size:20px;font-weight:700;margin:8px 0 20px">Cross-Task Summary</h2>`;
+  h+=`<div class="card" style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:12px">`;
+  h+=`<thead><tr><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--g200);color:var(--g500);font-size:11px">Task</th>`;
+  PROG_V_CATS.forEach(pc=>{
+    h+=`<th style="text-align:center;padding:8px 6px;border-bottom:2px solid var(--g200);font-size:10px;color:${pc.color};font-weight:700" title="${pc.name}">${esc(pc.name.split(' ').map(w=>w[0]).join(''))}</th>`;
+  });
+  h+=`<th style="text-align:center;padding:8px 6px;border-bottom:2px solid var(--g200);font-size:10px;color:var(--blue);font-weight:700;border-right:2px solid var(--g200)">Prog Total</th>`;
+  for(const [key,cat] of Object.entries(cats)){
+    h+=`<th style="text-align:center;padding:8px 6px;border-bottom:2px solid var(--g200);font-size:10px;color:${cat.color};font-weight:700" title="${cat.name}">${esc(cat.abbrev)}</th>`;
+  }
+  h+=`<th style="text-align:center;padding:8px 6px;border-bottom:2px solid var(--g200);font-size:10px;color:var(--purple);font-weight:700">LLM Total</th>`;
+  h+=`</tr></thead><tbody>`;
+
+  for(const pKey of Object.keys(DATA.personas)){
+    const persona=DATA.personas[pKey];
+    // Persona header
+    h+=`<tr><td colspan="${PROG_V_CATS.length+Object.keys(cats).length+3}" style="padding:8px 10px 4px;font-weight:700;font-size:12px;color:var(--g600);border-top:1px solid var(--g200)">${esc(persona.name)}</td></tr>`;
+
+    persona.tasks.forEach(task=>{
+      const progChecks=describeProgrammaticChecks(task);
+      const progByKey={};
+      progChecks.forEach(c=>{progByKey[c.key]=c.items.length;});
+      const progTotal=progChecks.reduce((s,c)=>s+c.items.length,0);
+
+      const llmByKey={};
+      task.rubric.forEach(r=>{
+        const cat=r.category||'other';
+        if(!llmByKey[cat])llmByKey[cat]=0;
+        llmByKey[cat]+=Math.abs(r.points);
+      });
+      const llmTotal=Object.values(llmByKey).reduce((a,b)=>a+b,0);
+
+      h+=`<tr style="border-bottom:1px solid var(--g150)">`;
+      h+=`<td style="padding:6px 10px;font-weight:500;color:var(--g700);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(task.title)}">${esc(task.title)}</td>`;
+
+      // Prog columns
+      PROG_V_CATS.forEach(pc=>{
+        const cnt=progByKey[pc.key]||0;
+        h+=`<td style="text-align:center;padding:6px;color:${pc.color};font-weight:600">${cnt}</td>`;
+      });
+      h+=`<td style="text-align:center;padding:6px;font-weight:700;color:var(--blue);border-right:2px solid var(--g200)">${progTotal}</td>`;
+
+      // LLM columns
+      for(const [key,cat] of Object.entries(cats)){
+        const pts=llmByKey[key]||0;
+        h+=`<td style="text-align:center;padding:6px;color:${pts>0?cat.color:'var(--g300)'};font-weight:${pts>0?'600':'400'}">${pts||' -'}</td>`;
+      }
+      h+=`<td style="text-align:center;padding:6px;font-weight:700;color:var(--purple)">${llmTotal}</td>`;
+      h+=`</tr>`;
+    });
+  }
+
+  // Totals row
+  h+=`<tr style="border-top:2px solid var(--g300)"><td style="padding:8px 10px;font-weight:700;color:var(--g800)">All Tasks</td>`;
+  const progGrandTotals={};let progGrand=0;
+  const llmGrandTotals={};let llmGrand=0;
+  for(const p of Object.values(DATA.personas)){
+    for(const t of p.tasks){
+      const pc=describeProgrammaticChecks(t);
+      pc.forEach(c=>{progGrandTotals[c.key]=(progGrandTotals[c.key]||0)+c.items.length;progGrand+=c.items.length;});
+      t.rubric.forEach(r=>{const cat=r.category||'other';llmGrandTotals[cat]=(llmGrandTotals[cat]||0)+Math.abs(r.points);llmGrand+=Math.abs(r.points);});
+    }
+  }
+  PROG_V_CATS.forEach(pc=>{
+    h+=`<td style="text-align:center;padding:8px 6px;font-weight:700;color:${pc.color}">${progGrandTotals[pc.key]||0}</td>`;
+  });
+  h+=`<td style="text-align:center;padding:8px 6px;font-weight:800;color:var(--blue);border-right:2px solid var(--g200)">${progGrand}</td>`;
+  for(const [key,cat] of Object.entries(cats)){
+    h+=`<td style="text-align:center;padding:8px 6px;font-weight:700;color:${cat.color}">${llmGrandTotals[key]||0}</td>`;
+  }
+  h+=`<td style="text-align:center;padding:8px 6px;font-weight:800;color:var(--purple)">${llmGrand}</td>`;
+  h+=`</tr></tbody></table></div>`;
+
+  // ═══════════════════════════════════════════
+  // PER-TASK VERIFIER BREAKDOWN
+  // ═══════════════════════════════════════════
+  h+=`<h2 style="font-size:20px;font-weight:700;margin:32px 0 20px">Per-Task Verifier Breakdown</h2>`;
+
+  for(const pKey of Object.keys(DATA.personas)){
+    const persona=DATA.personas[pKey];
+    h+=`<h3 style="font-size:16px;font-weight:600;margin:24px 0 12px">${esc(persona.name)}</h3>`;
+
+    persona.tasks.forEach(task=>{
+      const progChecks=describeProgrammaticChecks(task);
+      const totalProgChecks=progChecks.reduce((s,c)=>s+c.items.length,0);
+
+      // Point allocation for LLM verifiers
       const catPoints={};
       task.rubric.forEach(r=>{
         const cat=r.category||'other';
@@ -1237,28 +1662,88 @@ function renderRubricDesign(){
       });
       const totalPts=Object.values(catPoints).reduce((a,b)=>a+b,0);
 
-      h+=`<div class="card"><div class="card-title">${esc(task.title)}<span style="margin-left:auto;font-size:12px;color:var(--g400)">${task.rubric.length} items, ${task.max_possible} pts</span></div>`;
+      h+=`<div class="card"><div class="card-title">${esc(task.title)}<span style="margin-left:auto;display:flex;gap:8px"><span class="badge badge-info">${totalProgChecks} programmatic</span><span class="badge badge-purple">${task.rubric.length} LLM-judged</span></span></div>`;
+
+      // ── Programmatic section ──
+      h+=`<div style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div>Programmatic Verifiers</div>`;
+
+      progChecks.forEach(cat=>{
+        const meta=PROG_V_CATS.find(p=>p.key===cat.key);
+        if(!meta)return;
+        h+=`<div style="padding:6px 0 2px;font-size:11px;font-weight:700;color:${meta.color};text-transform:uppercase;letter-spacing:.5px">${esc(meta.name)}</div>`;
+        cat.items.forEach(item=>{
+          h+=`<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;font-size:12px;border-bottom:1px solid var(--g150)">
+            <span class="cat-badge" style="background:${meta.color}20;color:${meta.color};min-width:30px;text-align:center;flex-shrink:0;margin-top:1px">${esc(meta.name.split(' ').map(w=>w[0]).join(''))}</span>
+            <span style="flex:1;color:var(--g700);line-height:1.4">${esc(item.desc)}</span>
+            ${item.info?'<span style="font-size:10px;color:var(--blue);font-weight:600">INFO</span>':'<span style="font-size:10px;color:var(--g400);font-weight:600">PASS/FAIL</span>'}
+          </div>`;
+        });
+      });
+      h+=`</div>`;
+
+      // ── LLM-judged section ──
+      h+=`<div>
+        <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:10px;display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div>LLM-Judged Verifiers<span style="font-weight:400;font-size:12px;color:var(--g400);margin-left:8px">${task.max_possible} pts max</span></div>`;
+
       // Stacked bar
-      h+='<div class="point-bar">';
+      h+=`<div class="point-bar" style="margin-bottom:10px">`;
       for(const [catKey,pts] of Object.entries(catPoints)){
         const cat=cats[catKey]||{abbrev:catKey,color:'var(--g400)'};
         const pct=totalPts>0?pts/totalPts*100:0;
         if(pct<3)continue;
         h+=`<div class="point-bar-seg" style="width:${pct}%;background:${cat.color}" title="${cat.abbrev}: ${pts}pts">${cat.abbrev}</div>`;
       }
-      h+='</div>';
-      // Item list
-      h+='<div style="margin-top:12px">';
+      h+=`</div>`;
+
       task.rubric.forEach(r=>{
         const cat=cats[r.category]||{abbrev:'?',color:'var(--g400)'};
-        h+=`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;border-bottom:1px solid var(--g150)"><span class="cat-badge" style="background:${cat.color}20;color:${cat.color};min-width:30px;text-align:center">${esc(cat.abbrev)}</span><span style="flex:1;color:var(--g700)">${esc(r.description)}</span><span style="font-weight:700;${r.is_positive?'color:var(--green)':'color:var(--red)'}">${r.is_positive?'+':''}${r.points}</span></div>`;
+        h+=`<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;font-size:12px;border-bottom:1px solid var(--g150)">
+          <span class="cat-badge" style="background:${cat.color}20;color:${cat.color};min-width:30px;text-align:center;flex-shrink:0;margin-top:1px">${esc(cat.abbrev)}</span>
+          <span style="flex:1;color:var(--g700);line-height:1.4">${esc(r.description)}</span>
+          <span style="font-weight:700;flex-shrink:0;${r.is_positive?'color:var(--green)':'color:var(--red)'}">${r.is_positive?'+':''}${r.points}</span>
+        </div>`;
       });
-      h+='</div></div>';
+      h+=`</div></div>`;
     });
   }
 
-  // Category distribution across all tasks
-  h+='<h2 style="font-size:20px;font-weight:700;margin:32px 0 20px">Category Distribution Across All Tasks</h2>';
+  // ═══════════════════════════════════════════
+  // DISTRIBUTION ACROSS ALL TASKS
+  // ═══════════════════════════════════════════
+  h+=`<h2 style="font-size:20px;font-weight:700;margin:32px 0 20px">Verifier Distribution Across All Tasks</h2>`;
+
+  // Programmatic distribution
+  const progTotals={};
+  for(const p of Object.values(DATA.personas)){
+    for(const t of p.tasks){
+      const checks=describeProgrammaticChecks(t);
+      checks.forEach(cat=>{
+        if(!progTotals[cat.key])progTotals[cat.key]=0;
+        progTotals[cat.key]+=cat.items.length;
+      });
+    }
+  }
+  const progTotal=Object.values(progTotals).reduce((a,b)=>a+b,0);
+
+  h+=`<div class="card" style="margin-bottom:16px"><div class="card-title"><div class="dot" style="background:var(--blue)"></div>Programmatic<span style="margin-left:auto;font-size:12px;color:var(--g400)">${progTotal} total checks</span></div>`;
+  h+=`<div class="point-bar" style="height:32px;border-radius:6px">`;
+  PROG_V_CATS.forEach(pc=>{
+    const cnt=progTotals[pc.key]||0;
+    const pct=progTotal>0?cnt/progTotal*100:0;
+    if(pct<2)return;
+    h+=`<div class="point-bar-seg" style="width:${pct}%;background:${pc.color};font-size:11px" title="${pc.name}: ${cnt} checks">${pct>8?pc.name.split(' ').map(w=>w[0]).join('')+' '+cnt:''}</div>`;
+  });
+  h+=`</div>`;
+  h+=`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:12px">`;
+  PROG_V_CATS.forEach(pc=>{
+    const cnt=progTotals[pc.key]||0;
+    const pct=progTotal>0?(cnt/progTotal*100).toFixed(1):0;
+    h+=`<div style="font-size:12px"><span class="cat-dot" style="background:${pc.color}"></span><strong>${esc(pc.name)}</strong>: ${cnt} (${pct}%)</div>`;
+  });
+  h+=`</div></div>`;
+
+  // LLM distribution
   const allCatPts={};
   for(const p of Object.values(DATA.personas)){
     for(const t of p.tasks){
@@ -1270,22 +1755,23 @@ function renderRubricDesign(){
     }
   }
   const totalAll=Object.values(allCatPts).reduce((a,b)=>a+b,0);
-  h+='<div class="card"><div class="point-bar" style="height:40px;border-radius:8px">';
+  h+=`<div class="card"><div class="card-title"><div class="dot" style="background:var(--purple)"></div>LLM-Judged<span style="margin-left:auto;font-size:12px;color:var(--g400)">${totalAll} total pts</span></div>`;
+  h+=`<div class="point-bar" style="height:32px;border-radius:6px">`;
   for(const [catKey,pts] of Object.entries(allCatPts).sort((a,b)=>b[1]-a[1])){
     const cat=cats[catKey]||{abbrev:catKey,color:'var(--g400)'};
     const pct=totalAll>0?pts/totalAll*100:0;
-    h+=`<div class="point-bar-seg" style="width:${pct}%;background:${cat.color};font-size:12px" title="${cat.name}: ${pts}pts (${pct.toFixed(1)}%)">${pct>5?cat.abbrev+' '+pts+'pts':''}</div>`;
+    h+=`<div class="point-bar-seg" style="width:${pct}%;background:${cat.color};font-size:11px" title="${cat.name}: ${pts}pts">${pct>5?cat.abbrev+' '+pts+'pts':''}</div>`;
   }
-  h+='</div>';
-  h+='<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:12px">';
+  h+=`</div>`;
+  h+=`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:12px">`;
   for(const [catKey,pts] of Object.entries(allCatPts).sort((a,b)=>b[1]-a[1])){
     const cat=cats[catKey]||{abbrev:catKey,name:catKey,color:'var(--g400)'};
-    const pct=totalAll>0?pts/totalAll*100:0;
-    h+=`<div style="font-size:13px"><span class="cat-dot" style="background:${cat.color}"></span><strong>${esc(cat.name)}</strong>: ${pts}pts (${pct.toFixed(1)}%)</div>`;
+    const pct=totalAll>0?(pts/totalAll*100).toFixed(1):0;
+    h+=`<div style="font-size:12px"><span class="cat-dot" style="background:${cat.color}"></span><strong>${esc(cat.name)}</strong>: ${pts}pts (${pct}%)</div>`;
   }
-  h+='</div></div>';
+  h+=`</div></div>`;
 
-  document.getElementById('rubric-design-content').innerHTML=h;
+  document.getElementById('verifier-design-content').innerHTML=h;
 }
 
 
